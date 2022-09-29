@@ -78,14 +78,6 @@ export default {
       pickName,
     };
   },
-  //     pickName() {
-  //       var chosenNumber = Math.floor(
-  //         Math.random() * this.namesToChooseFrom.length,
-  //       );
-  //       this.chosenName = this.namesToChooseFrom[chosenNumber];
-  //     },
-  //   },
-  // });
 };
 </script>
 
