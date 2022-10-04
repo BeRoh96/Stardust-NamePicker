@@ -19,11 +19,11 @@
     </section>
     <div class="randomizer">
       <h1>Randomizer</h1>
-      <ul>
+      <!-- <ul>
         <li v-for="(name, key, index) in namesToChooseFrom" :key="index">
           <span class="namestochoosefrom">{{ name }}</span>
         </li>
-      </ul>
+      </ul> -->
       <span class="divContent" id="chosenName">{{ chosenName }}</span>
       <button class="divContent" id="pickNameButton" @click="pickName">
         GO!
