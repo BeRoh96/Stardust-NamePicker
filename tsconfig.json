@@ -1,7 +1,10 @@
 {
   "files": [],
   "compilerOptions": {
-    "allowJs": true
+    "allowJs": true,
+    "module": "es2015",
+    "preserveValueImports": true,
+    "importsNotUsedAsValues": "preserve"
   },
   "references": [
     {
