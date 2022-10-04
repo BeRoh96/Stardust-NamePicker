@@ -16,14 +16,19 @@
           <button id="destroy" @click="removeName(name)">X</button>
         </li>
       </ul>
-      <span>{{ namesToChooseFrom }}</span>
-      <div id="picked-name">
-        <button class="divContent" id="pickNameButton" @click="pickName">
-          GO!
-        </button>
-        <span class="divContent" id="chosenName">{{ chosenName }}</span>
-      </div>
     </section>
+    <div class="randomizer">
+      <h1>Randomizer</h1>
+      <ul>
+        <li v-for="(name, key, index) in namesToChooseFrom" :key="index">
+          <span class="namestochoosefrom">{{ name }}</span>
+        </li>
+      </ul>
+      <span class="divContent" id="chosenName">{{ chosenName }}</span>
+      <button class="divContent" id="pickNameButton" @click="pickName">
+        GO!
+      </button>
+    </div>
   </section>
 </template>
 
@@ -53,7 +58,7 @@ export default {
       const chosenNumber = Math.floor(
         Math.random() * namesToChooseFrom.value.length
       );
-      chosenName.value = namesToChooseFrom[chosenNumber];
+      chosenName.value = namesToChooseFrom.value[chosenNumber];
     }
 
     watch(
@@ -82,6 +87,34 @@ export default {
 </script>
 
 <style scoped>
+.randomizer ul {
+  margin-top: 100px;
+  display: flex;
+}
+
+.namestochoosefrom {
+  padding: 20px;
+  margin: 20px;
+  background-color: #9c9892;
+  color: black;
+  font-size: larger;
+  font-weight: bold;
+}
+
+#pickNameButton {
+  margin-top: 150px;
+}
+
+.user-names {
+  width: 50%;
+}
+
+.container {
+  display: flex;
+  width: 1300px;
+  height: 1000pxS;
+}
+
 button:hover,
 button:active {
   background-color: #a37125;

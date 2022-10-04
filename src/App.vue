@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
+// import { RouterLink, RouterView } from "vue-router";
 import NameList from "./components/NameList.vue";
 </script>
 
@@ -7,8 +7,6 @@ import NameList from "./components/NameList.vue";
   <header>
     <div class="wrapper">
       <NameList />
-
-      <nav></nav>
     </div>
   </header>
 
