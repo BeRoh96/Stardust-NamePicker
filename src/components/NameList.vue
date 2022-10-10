@@ -5,7 +5,7 @@
       <input type="text" v-model="enteredNameValue" @keyup.enter="addName" />
       <button @click="addName">Add Name</button>
       <ul>
-        <li v-for="(name, key, index) in names" :key="index">
+        <li v-for="(name, index) in names" :key="index">
           <input
             :id="name"
             type="checkbox"
@@ -32,15 +32,15 @@
   </section>
 </template>
 
-<script>
+<script lang="ts">
 import { ref, watch, onMounted } from "vue";
 
 export default {
   setup() {
-    const enteredNameValue = ref("");
-    const names = ref([]);
-    const namesToChooseFrom = ref([]);
-    const chosenName = ref("");
+    const enteredNameValue = ref<String>("");
+    const names = ref<String[]>([]);
+    const namesToChooseFrom = ref<String[]>([]);
+    const chosenName = ref<String>("");
 
     function addName() {
       if (enteredNameValue.value.trim() === "") {
@@ -50,7 +50,7 @@ export default {
       enteredNameValue.value = "";
     }
 
-    function removeName(name) {
+    function removeName(name: String) {
       names.value.splice(names.value.indexOf(name), 1);
     }
 
@@ -70,7 +70,7 @@ export default {
     );
 
     onMounted(() => {
-      names.value = JSON.parse(localStorage.getItem("names")) || [];
+      names.value = JSON.parse(localStorage.getItem("names") || "");
     });
 
     return {
