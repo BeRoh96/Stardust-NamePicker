@@ -17,7 +17,9 @@
       <h2>Randomizer</h2>
       <p>
         <span class="list">
-          <span>{{ chosenName }}</span>
+          <transition appear @before-enter="beforeEnter" @enter="enter">
+            <span>Test</span>
+          </transition>
         </span>
       </p>
       <button @click="pickName">GO</button>
@@ -27,7 +29,7 @@
 
 <script lang="ts">
 import { ref, watch, onMounted } from "vue";
-import gsap from "gsap";
+import { gsap } from "gsap";
 
 export default {
   setup() {
@@ -35,6 +37,22 @@ export default {
     const names = ref<String[]>([]);
     const namesToChooseFrom = ref<String[]>([]);
     const chosenName = ref<String>("");
+
+    const beforeEnter = (el: {
+      style: { opacity: number; transform: string };
+    }) => {
+      el.style.opacity = 0;
+      el.style.transform = "translateY(100px)";
+    };
+
+    const enter = (el: gsap.TweenTarget, done: any) => {
+      gsap.to(el, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        onComplete: done,
+      });
+    };
 
     function selectAll() {
       namesToChooseFrom.value = names.value;
@@ -80,6 +98,8 @@ export default {
       removeName,
       pickName,
       selectAll,
+      beforeEnter,
+      enter,
     };
   },
 };
