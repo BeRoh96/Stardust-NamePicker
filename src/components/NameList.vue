@@ -15,20 +15,21 @@
     </section>
     <div class="randomizer">
       <h2>Randomizer</h2>
-      <p>
-        <span class="list">
-          <transition appear @before-enter="beforeEnter" @enter="enter">
-            <span>Test</span>
-          </transition>
-        </span>
-      </p>
+      <div>
+        <ul class="list" ref="list">
+          <li>Test 1</li>
+          <li>Test 2</li>
+          <li>Test 3</li>
+          <li>Test 4</li>
+        </ul>
+      </div>
       <button @click="pickName">GO</button>
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, type Ref } from "vue";
 import { gsap } from "gsap";
 
 export default {
@@ -37,22 +38,7 @@ export default {
     const names = ref<String[]>([]);
     const namesToChooseFrom = ref<String[]>([]);
     const chosenName = ref<String>("");
-
-    const beforeEnter = (el: {
-      style: { opacity: number; transform: string };
-    }) => {
-      el.style.opacity = 0;
-      el.style.transform = "translateY(100px)";
-    };
-
-    const enter = (el: gsap.TweenTarget, done: any) => {
-      gsap.to(el, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        onComplete: done,
-      });
-    };
+    const list: Ref = ref(null);
 
     function selectAll() {
       namesToChooseFrom.value = names.value;
@@ -70,11 +56,17 @@ export default {
       names.value.splice(names.value.indexOf(name), 1);
     }
 
+    const triggerAnimation = () => {
+      gsap.to(list.value, { x: 100 });
+    };
+
     function pickName() {
       const chosenNumber = Math.floor(
         Math.random() * namesToChooseFrom.value.length
       );
       chosenName.value = namesToChooseFrom.value[chosenNumber];
+
+      triggerAnimation();
     }
 
     watch(
@@ -98,8 +90,7 @@ export default {
       removeName,
       pickName,
       selectAll,
-      beforeEnter,
-      enter,
+      list,
     };
   },
 };
