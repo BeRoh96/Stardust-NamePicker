@@ -4,36 +4,24 @@
       <h2>Names</h2>
       <input type="text" v-model="enteredNameValue" @keyup.enter="addName" />
       <button @click="addName">Add Name</button>
+      <button @click="selectAll">Select All</button>
       <ul>
         <li v-for="(name, index) in names" :key="index">
-          <input
-            :id="name"
-            type="checkbox"
-            :value="name"
-            v-model="namesToChooseFrom"
-          />
+          <input type="checkbox" :value="name" v-model="namesToChooseFrom" />
           <label for="name">{{ name }}</label>
           <button id="destroy" @click="removeName(name)">X</button>
         </li>
       </ul>
     </section>
     <div class="randomizer">
-      <h1>Randomizer</h1>
-      <!-- <ul>
-        <li v-for="(name, key, index) in namesToChooseFrom" :key="index">
-          <span class="namestochoosefrom">{{ name }}</span>
-        </li>
-      </ul> -->
-      <span class="divContent" id="chosenName">{{ chosenName }}</span>
-      <button class="divContent" id="pickNameButton" @click="pickName">
-        GO!
-      </button>
+      <h2>Randomizer</h2>
     </div>
   </section>
 </template>
 
 <script lang="ts">
 import { ref, watch, onMounted } from "vue";
+import { gsap } from "gsap";
 
 export default {
   setup() {
@@ -41,6 +29,10 @@ export default {
     const names = ref<String[]>([]);
     const namesToChooseFrom = ref<String[]>([]);
     const chosenName = ref<String>("");
+
+    function selectAll() {
+      namesToChooseFrom.value = names.value;
+    }
 
     function addName() {
       if (enteredNameValue.value.trim() === "") {
@@ -81,6 +73,7 @@ export default {
       addName,
       removeName,
       pickName,
+      selectAll,
     };
   },
 };
@@ -101,7 +94,7 @@ export default {
   font-weight: bold;
 }
 
-#pickNameButton {
+#spinner {
   margin-top: 150px;
 }
 
@@ -112,7 +105,6 @@ export default {
 .container {
   display: flex;
   width: 1300px;
-  height: 1000pxS;
 }
 
 button:hover,
