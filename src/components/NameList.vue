@@ -15,13 +15,19 @@
     </section>
     <div class="randomizer">
       <h2>Randomizer</h2>
+      <p>
+        <span class="list">
+          <span>{{ chosenName }}</span>
+        </span>
+      </p>
+      <button @click="pickName">GO</button>
     </div>
   </section>
 </template>
 
 <script lang="ts">
 import { ref, watch, onMounted } from "vue";
-import { gsap } from "gsap";
+import gsap from "gsap";
 
 export default {
   setup() {
@@ -80,9 +86,37 @@ export default {
 </script>
 
 <style scoped>
-.randomizer ul {
-  margin-top: 100px;
-  display: flex;
+p {
+  font-family: Oswald;
+  font-size: 36px;
+  text-transform: uppercase;
+  color: white;
+  height: 1em;
+  line-height: 1em;
+  overflow: hidden;
+  margin-top: 40px;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+span.list {
+  margin: -0.25em 0 0 0;
+  padding: 0;
+  display: inline-block;
+  vertical-align: middle;
+  height: 1em;
+  line-height: 1em;
+}
+span.list span {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: white;
+  height: 1em;
+  line-height: 1em;
+  margin: 0;
+  display: block;
 }
 
 .namestochoosefrom {
