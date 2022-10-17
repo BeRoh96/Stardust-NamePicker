@@ -15,12 +15,11 @@
     </section>
     <div class="randomizer">
       <h2>Randomizer</h2>
-      <div>
+      <div class="list-wrapper">
         <ul class="list" ref="list">
-          <li>Test 1</li>
-          <li>Test 2</li>
-          <li>Test 3</li>
-          <li>Test 4</li>
+          <li v-for="(name, index) in namesToRender" :key="index">
+            {{ name }}
+          </li>
         </ul>
       </div>
       <button @click="pickName">GO</button>
@@ -29,7 +28,14 @@
 </template>
 
 <script lang="ts">
-import { ref, watch, onMounted, type Ref } from "vue";
+import {
+  ref,
+  watch,
+  onMounted,
+  type Ref,
+  type ComputedRef,
+  computed,
+} from "vue";
 import { gsap } from "gsap";
 
 export default {
@@ -38,7 +44,7 @@ export default {
     const names = ref<String[]>([]);
     const namesToChooseFrom = ref<String[]>([]);
     const chosenName = ref<String>("");
-    const list: Ref = ref(null);
+    const list: Ref<HTMLElement | null> = ref(null);
 
     function selectAll() {
       namesToChooseFrom.value = names.value;
@@ -56,8 +62,36 @@ export default {
       names.value.splice(names.value.indexOf(name), 1);
     }
 
+    const namesToRender: ComputedRef = computed(() => {
+      const arrayToShuffle = [
+        ...namesToChooseFrom.value,
+        ...namesToChooseFrom.value,
+        ...namesToChooseFrom.value,
+        ...namesToChooseFrom.value,
+        ...namesToChooseFrom.value,
+      ];
+      return arrayToShuffle.sort(() => Math.random() - 0.5);
+    });
+
     const triggerAnimation = () => {
-      gsap.to(list.value, { x: 100 });
+      gsap.set(list.value, { opacity: 1 });
+      const listHeight = list.value?.clientHeight;
+      const memberCount = namesToRender.value.length;
+      const chosenNumber = Math.floor(Math.random() * memberCount);
+
+      if (listHeight) {
+        const position = -1 * (chosenNumber * listHeight);
+        const duration = chosenNumber * listHeight * 0.01;
+        gsap.fromTo(
+          list.value,
+          { x: 0 },
+          {
+            y: position,
+            ease: "elastic.out(1, 0.3)",
+            duration: duration,
+          }
+        );
+      }
     };
 
     function pickName() {
@@ -85,6 +119,7 @@ export default {
       enteredNameValue,
       names,
       namesToChooseFrom,
+      namesToRender,
       chosenName,
       addName,
       removeName,
@@ -97,29 +132,30 @@ export default {
 </script>
 
 <style scoped>
-p {
+.list-wrapper {
   font-family: Oswald;
   font-size: 36px;
   text-transform: uppercase;
-  color: white;
+  color: black;
   height: 1em;
   line-height: 1em;
   overflow: hidden;
-  margin-top: 40px;
+  margin: 0;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
+  font-smooth: antialiased;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
-span.list {
+ul.list {
   margin: -0.25em 0 0 0;
   padding: 0;
   display: inline-block;
   vertical-align: middle;
   height: 1em;
   line-height: 1em;
+  opacity: 0;
 }
-span.list span {
+ul.list li {
   margin: 0;
   padding: 0;
   list-style: none;
