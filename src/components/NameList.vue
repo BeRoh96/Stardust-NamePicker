@@ -131,7 +131,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 .list-wrapper {
   font-family: "Roboto", sans-serif;
@@ -155,16 +155,16 @@ ul.list {
   height: 1em;
   line-height: 1em;
   opacity: 0;
-}
-ul.list li {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  color: white;
-  height: 1em;
-  line-height: 1em;
-  margin: 0;
-  display: block;
+  & li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: white;
+    height: 1em;
+    line-height: 1em;
+    margin: 0;
+    display: block;
+  }
 }
 
 .namestochoosefrom {
