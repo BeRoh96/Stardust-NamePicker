@@ -158,15 +158,6 @@ ul.list {
   }
 }
 
-.namestochoosefrom {
-  padding: 20px;
-  margin: 20px;
-  background-color: #9c9892;
-  color: black;
-  font-size: larger;
-  font-weight: bold;
-}
-
 #spinner {
   margin-top: 150px;
 }
