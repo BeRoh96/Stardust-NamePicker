@@ -15,15 +15,14 @@
     </section>
     <div class="randomizer">
       <h2>Randomizer</h2>
-      <div>
+      <div class="listWrapper">
         <ul class="list" ref="list">
-          <li>Test 1</li>
-          <li>Test 2</li>
-          <li>Test 3</li>
-          <li>Test 4</li>
+          <li v-for="(name, index) in namesToChooseFrom" :key="index">
+            {{ name }}
+          </li>
         </ul>
       </div>
-      <button @click="pickName">GO</button>
+      <button @click="triggerAnimation">GO</button>
     </div>
   </section>
 </template>
@@ -57,17 +56,23 @@ export default {
     }
 
     const triggerAnimation = () => {
-      gsap.to(list.value, { x: 100 });
-    };
-
-    function pickName() {
+      const liHeight = list.value.clientHeight;
+      let counter = 1;
       const chosenNumber = Math.floor(
         Math.random() * namesToChooseFrom.value.length
       );
-      chosenName.value = namesToChooseFrom.value[chosenNumber];
 
-      triggerAnimation();
-    }
+      if (counter == namesToChooseFrom.value.length) {
+        counter = 1;
+        gsap.set(list.value, { y: 0 });
+      }
+
+      gsap.to(list.value, {
+        y: chosenNumber * (0 - liHeight * counter),
+        ease: "elastic.out(8, 0)",
+      });
+      counter++;
+    };
 
     watch(
       names,
@@ -88,7 +93,7 @@ export default {
       chosenName,
       addName,
       removeName,
-      pickName,
+      triggerAnimation,
       selectAll,
       list,
     };
@@ -97,7 +102,7 @@ export default {
 </script>
 
 <style scoped>
-p {
+.listWrapper {
   font-family: Oswald;
   font-size: 36px;
   text-transform: uppercase;
@@ -105,21 +110,19 @@ p {
   height: 1em;
   line-height: 1em;
   overflow: hidden;
-  margin-top: 40px;
+  margin: 0;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
-span.list {
-  margin: -0.25em 0 0 0;
+.list {
   padding: 0;
   display: inline-block;
   vertical-align: middle;
   height: 1em;
   line-height: 1em;
 }
-span.list span {
+.list li {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -129,7 +132,6 @@ span.list span {
   margin: 0;
   display: block;
 }
-
 .namestochoosefrom {
   padding: 20px;
   margin: 20px;
