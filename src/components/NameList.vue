@@ -15,20 +15,27 @@
     </section>
     <div class="randomizer">
       <h2>Randomizer</h2>
-      <p>
-        <span class="list">
-          <transition appear @before-enter="beforeEnter" @enter="enter">
-            <span>Test</span>
-          </transition>
-        </span>
-      </p>
+      <div class="list-wrapper">
+        <ul class="list" ref="list">
+          <li v-for="(name, index) in namesToRender" :key="index">
+            {{ name }}
+          </li>
+        </ul>
+      </div>
       <button @click="pickName">GO</button>
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import { ref, watch, onMounted } from "vue";
+import {
+  ref,
+  watch,
+  onMounted,
+  type Ref,
+  type ComputedRef,
+  computed,
+} from "vue";
 import { gsap } from "gsap";
 
 export default {
@@ -37,22 +44,7 @@ export default {
     const names = ref<String[]>([]);
     const namesToChooseFrom = ref<String[]>([]);
     const chosenName = ref<String>("");
-
-    const beforeEnter = (el: {
-      style: { opacity: number; transform: string };
-    }) => {
-      el.style.opacity = 0;
-      el.style.transform = "translateY(100px)";
-    };
-
-    const enter = (el: gsap.TweenTarget, done: any) => {
-      gsap.to(el, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        onComplete: done,
-      });
-    };
+    const list: Ref<HTMLElement | null> = ref(null);
 
     function selectAll() {
       namesToChooseFrom.value = names.value;
@@ -70,11 +62,45 @@ export default {
       names.value.splice(names.value.indexOf(name), 1);
     }
 
+    const namesToRender: ComputedRef = computed(() => {
+      const arrayToShuffle = [
+        ...namesToChooseFrom.value,
+        ...namesToChooseFrom.value,
+        ...namesToChooseFrom.value,
+        ...namesToChooseFrom.value,
+        ...namesToChooseFrom.value,
+      ];
+      return arrayToShuffle.sort(() => Math.random() - 0.5);
+    });
+
+    const triggerAnimation = () => {
+      gsap.set(list.value, { opacity: 1 });
+      const listHeight = list.value?.clientHeight;
+      const memberCount = namesToRender.value.length;
+      const chosenNumber = Math.floor(Math.random() * memberCount);
+
+      if (listHeight) {
+        const position = -1 * (chosenNumber * listHeight);
+        const duration = chosenNumber * listHeight * 0.01;
+        gsap.fromTo(
+          list.value,
+          { y: 0 },
+          {
+            y: position,
+            ease: "elastic.out(1, 0.3)",
+            duration: duration,
+          }
+        );
+      }
+    };
+
     function pickName() {
       const chosenNumber = Math.floor(
         Math.random() * namesToChooseFrom.value.length
       );
       chosenName.value = namesToChooseFrom.value[chosenNumber];
+
+      triggerAnimation();
     }
 
     watch(
@@ -93,50 +119,52 @@ export default {
       enteredNameValue,
       names,
       namesToChooseFrom,
+      namesToRender,
       chosenName,
       addName,
       removeName,
       pickName,
       selectAll,
-      beforeEnter,
-      enter,
+      list,
     };
   },
 };
 </script>
 
-<style scoped>
-p {
-  font-family: Oswald;
+<style scoped lang="scss">
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+.list-wrapper {
+  font-family: "Roboto", sans-serif;
   font-size: 36px;
   text-transform: uppercase;
-  color: white;
+  color: black;
   height: 1em;
   line-height: 1em;
   overflow: hidden;
-  margin-top: 40px;
+  margin: 0;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
+  font-smooth: antialiased;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
-span.list {
+ul.list {
   margin: -0.25em 0 0 0;
   padding: 0;
   display: inline-block;
   vertical-align: middle;
   height: 1em;
   line-height: 1em;
-}
-span.list span {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  color: white;
-  height: 1em;
-  line-height: 1em;
-  margin: 0;
-  display: block;
+  opacity: 0;
+  & li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: white;
+    height: 1em;
+    line-height: 1em;
+    margin: 0;
+    display: block;
+  }
 }
 
 .namestochoosefrom {
