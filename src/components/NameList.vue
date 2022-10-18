@@ -22,7 +22,7 @@
           </li>
         </ul>
       </div>
-      <button @click="pickName">GO</button>
+      <button @click="triggerAnimation">GO</button>
     </div>
   </section>
 </template>
@@ -94,15 +94,6 @@ export default {
       }
     };
 
-    function pickName() {
-      const chosenNumber = Math.floor(
-        Math.random() * namesToChooseFrom.value.length
-      );
-      chosenName.value = namesToChooseFrom.value[chosenNumber];
-
-      triggerAnimation();
-    }
-
     watch(
       names,
       (newVal) => {
@@ -123,7 +114,7 @@ export default {
       chosenName,
       addName,
       removeName,
-      pickName,
+      triggerAnimation,
       selectAll,
       list,
     };
