@@ -132,8 +132,9 @@ export default {
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 .list-wrapper {
-  font-family: Oswald;
+  font-family: "Roboto", sans-serif;
   font-size: 36px;
   text-transform: uppercase;
   color: black;
