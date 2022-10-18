@@ -84,7 +84,7 @@ export default {
         const duration = chosenNumber * listHeight * 0.01;
         gsap.fromTo(
           list.value,
-          { x: 0 },
+          { y: 0 },
           {
             y: position,
             ease: "elastic.out(1, 0.3)",
