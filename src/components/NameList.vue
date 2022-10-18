@@ -15,9 +15,9 @@
     </section>
     <div class="randomizer">
       <h2>Randomizer</h2>
-      <div class="listWrapper">
+      <div class="list-wrapper">
         <ul class="list" ref="list">
-          <li v-for="(name, index) in namesToChooseFrom" :key="index">
+          <li v-for="(name, index) in namesToRender" :key="index">
             {{ name }}
           </li>
         </ul>
@@ -28,7 +28,14 @@
 </template>
 
 <script lang="ts">
-import { ref, watch, onMounted, type Ref } from "vue";
+import {
+  ref,
+  watch,
+  onMounted,
+  type Ref,
+  type ComputedRef,
+  computed,
+} from "vue";
 import { gsap } from "gsap";
 
 export default {
@@ -37,7 +44,7 @@ export default {
     const names = ref<String[]>([]);
     const namesToChooseFrom = ref<String[]>([]);
     const chosenName = ref<String>("");
-    const list: Ref = ref(null);
+    const list: Ref<HTMLElement | null> = ref(null);
 
     function selectAll() {
       namesToChooseFrom.value = names.value;
@@ -55,23 +62,36 @@ export default {
       names.value.splice(names.value.indexOf(name), 1);
     }
 
+    const namesToRender: ComputedRef = computed(() => {
+      const arrayToShuffle = [
+        ...namesToChooseFrom.value,
+        ...namesToChooseFrom.value,
+        ...namesToChooseFrom.value,
+        ...namesToChooseFrom.value,
+        ...namesToChooseFrom.value,
+      ];
+      return arrayToShuffle.sort(() => Math.random() - 0.5);
+    });
+
     const triggerAnimation = () => {
-      const liHeight = list.value.clientHeight;
-      let counter = 1;
-      const chosenNumber = Math.floor(
-        Math.random() * namesToChooseFrom.value.length
-      );
+      gsap.set(list.value, { opacity: 1 });
+      const listHeight = list.value?.clientHeight;
+      const memberCount = namesToRender.value.length;
+      const chosenNumber = Math.floor(Math.random() * memberCount);
 
-      if (counter == namesToChooseFrom.value.length) {
-        counter = 1;
-        gsap.set(list.value, { y: 0 });
+      if (listHeight) {
+        const position = -1 * (chosenNumber * listHeight);
+        const duration = chosenNumber * listHeight * 0.01;
+        gsap.fromTo(
+          list.value,
+          { y: 0 },
+          {
+            y: position,
+            ease: "elastic.out(1, 0.3)",
+            duration: duration,
+          }
+        );
       }
-
-      gsap.to(list.value, {
-        y: chosenNumber * (0 - liHeight * counter),
-        ease: "elastic.out(8, 0)",
-      });
-      counter++;
     };
 
     watch(
@@ -90,6 +110,7 @@ export default {
       enteredNameValue,
       names,
       namesToChooseFrom,
+      namesToRender,
       chosenName,
       addName,
       removeName,
@@ -101,36 +122,40 @@ export default {
 };
 </script>
 
-<style scoped>
-.listWrapper {
-  font-family: Oswald;
+<style scoped lang="scss">
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+.list-wrapper {
+  font-family: "Roboto", sans-serif;
   font-size: 36px;
   text-transform: uppercase;
-  color: white;
+  color: black;
   height: 1em;
   line-height: 1em;
   overflow: hidden;
   margin: 0;
   -webkit-font-smoothing: antialiased;
+  font-smooth: antialiased;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
-.list {
+ul.list {
+  margin: -0.25em 0 0 0;
   padding: 0;
   display: inline-block;
   vertical-align: middle;
   height: 1em;
   line-height: 1em;
-}
-.list li {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  color: white;
-  height: 1em;
-  line-height: 1em;
-  margin: 0;
-  display: block;
+  opacity: 0;
+  & li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: white;
+    height: 1em;
+    line-height: 1em;
+    margin: 0;
+    display: block;
+  }
 }
 .namestochoosefrom {
   padding: 20px;
