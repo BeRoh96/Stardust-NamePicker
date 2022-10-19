@@ -4,7 +4,7 @@
       <h2>Names</h2>
       <input type="text" v-model="enteredNameValue" @keyup.enter="addName" />
       <button @click="addName">Add Name</button>
-      <button @click="selectAll">Select All</button>
+      <button @click="toggle">Select All</button>
       <ul>
         <li v-for="(name, index) in names" :key="index">
           <input type="checkbox" :value="name" v-model="namesToChooseFrom" />
@@ -45,10 +45,7 @@ export default {
     const namesToChooseFrom = ref<String[]>([]);
     const chosenName = ref<String>("");
     const list: Ref<HTMLElement | null> = ref(null);
-
-    function selectAll() {
-      namesToChooseFrom.value = names.value;
-    }
+    const isActive = ref<Boolean>(false);
 
     function addName() {
       if (enteredNameValue.value.trim() === "") {
@@ -72,6 +69,16 @@ export default {
       ];
       return arrayToShuffle.sort(() => Math.random() - 0.5);
     });
+
+    const toggle = () => {
+      isActive.value = isActive.value ? false : true;
+
+      if (isActive.value) {
+        namesToChooseFrom.value = names.value;
+      } else {
+        namesToChooseFrom.value = [];
+      }
+    };
 
     const triggerAnimation = () => {
       gsap.set(list.value, { opacity: 1 });
@@ -115,8 +122,9 @@ export default {
       addName,
       removeName,
       triggerAnimation,
-      selectAll,
       list,
+      isActive,
+      toggle,
     };
   },
 };
@@ -168,6 +176,7 @@ ul.list {
 
 .container {
   display: flex;
+  // width: 100%;
   width: 1300px;
 }
 
