@@ -4,24 +4,25 @@ import NameList from "./components/NameList.vue";
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <NameList />
-    </div>
-  </header>
+  <body>
+    <header>
+      <div class="wrapper">
+        <NameList />
+      </div>
+    </header>
 
-  <RouterView />
+    <RouterView />
+  </body>
 </template>
 
-<style scoped>
+<style>
+body {
+  background-color: black;
+}
+
 header {
   line-height: 1.5;
   max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
 }
 
 nav {
@@ -29,14 +30,6 @@ nav {
   font-size: 12px;
   text-align: center;
   margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
 }
 
 nav a {

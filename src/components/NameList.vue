@@ -134,10 +134,10 @@ export default {
   overflow: hidden;
   margin: 0;
   -webkit-font-smoothing: antialiased;
-  font-smooth: antialiased;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
+
 ul.list {
   margin: -0.25em 0 0 0;
   padding: 0;
