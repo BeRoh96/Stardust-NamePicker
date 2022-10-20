@@ -4,7 +4,7 @@
       <h2>Names</h2>
       <input type="text" v-model="enteredNameValue" @keyup.enter="addName" />
       <button @click="addName">Add Name</button>
-      <button @click="toggle">Select All</button>
+      <button @click="toggleSelectAll">Select All</button>
       <ul>
         <li v-for="(name, index) in names" :key="index">
           <input type="checkbox" :value="name" v-model="namesToChooseFrom" />
@@ -23,6 +23,15 @@
         </ul>
       </div>
       <button @click="triggerAnimation">GO</button>
+    </div>
+    <div class="log">
+      <h2>Log</h2>
+      <button @click="toggleLog">Open Log</button>
+      <ul class="log-list" v-if="!isActiveLog">
+        <li v-for="(name, index) in chosenNames" :key="index">
+          {{ name }}
+        </li>
+      </ul>
     </div>
   </section>
 </template>
@@ -43,9 +52,10 @@ export default {
     const enteredNameValue = ref<String>("");
     const names = ref<String[]>([]);
     const namesToChooseFrom = ref<String[]>([]);
-    const chosenName = ref<String>("");
+    const chosenNames = ref<String[]>([]);
     const list: Ref<HTMLElement | null> = ref(null);
-    const isActive = ref<Boolean>(false);
+    const isActiveSelectAll = ref<Boolean>(false);
+    const isActiveLog = ref<Boolean>(true);
 
     function addName() {
       if (enteredNameValue.value.trim() === "") {
@@ -70,14 +80,18 @@ export default {
       return arrayToShuffle.sort(() => Math.random() - 0.5);
     });
 
-    const toggle = () => {
-      isActive.value = isActive.value ? false : true;
+    const toggleSelectAll = () => {
+      isActiveSelectAll.value = isActiveSelectAll.value ? false : true;
 
-      if (isActive.value) {
+      if (isActiveSelectAll.value) {
         namesToChooseFrom.value = names.value;
       } else {
         namesToChooseFrom.value = [];
       }
+    };
+
+    const toggleLog = () => {
+      isActiveLog.value = isActiveLog.value ? false : true;
     };
 
     const triggerAnimation = () => {
@@ -89,6 +103,7 @@ export default {
       if (listHeight) {
         const position = -1 * (chosenNumber * listHeight);
         const duration = chosenNumber * listHeight * 0.01;
+
         gsap.fromTo(
           list.value,
           { y: 0 },
@@ -99,18 +114,21 @@ export default {
           }
         );
       }
+      chosenNames.value.unshift(namesToRender.value[chosenNumber]);
     };
 
     watch(
       names,
       (newVal) => {
         localStorage.setItem("names", JSON.stringify(newVal));
+        localStorage.setItem("chosenNames", JSON.stringify(newVal));
       },
       { deep: true }
     );
 
     onMounted(() => {
       names.value = JSON.parse(localStorage.getItem("names") || "");
+      chosenNames.value = JSON.parse(localStorage.getItem("chosenNames") || "");
     });
 
     return {
@@ -118,13 +136,14 @@ export default {
       names,
       namesToChooseFrom,
       namesToRender,
-      chosenName,
+      chosenNames,
       addName,
       removeName,
       triggerAnimation,
       list,
-      isActive,
-      toggle,
+      isActiveLog,
+      toggleSelectAll,
+      toggleLog,
     };
   },
 };
@@ -132,6 +151,18 @@ export default {
 
 <style scoped lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+
+.log-list {
+  margin-top: 50px;
+  height: 200px;
+  font-family: "Roboto", sans-serif;
+  font-size: 20px;
+  overflow: auto;
+}
+.log {
+  position: absolute;
+  margin-left: 900px;
+}
 .list-wrapper {
   font-family: "Roboto", sans-serif;
   font-size: 36px;
