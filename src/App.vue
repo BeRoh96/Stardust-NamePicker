@@ -1,71 +1,54 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
-import NameList from "./components/NameList.vue";
-</script>
-
 <template>
-  <body>
-    <header>
-      <div class="wrapper">
+  <div class="wrapper">
+    <div class="container">
+      <div class="nameslist">
         <NameList />
       </div>
-    </header>
-
-    <RouterView />
-  </body>
+      <div class="animation">
+        <AnimationSpin />
+      </div>
+      <div class="log">
+        <NameLog />
+      </div>
+    </div>
+  </div>
 </template>
 
+<script lang="ts">
+import NameList from "./components/NameList.vue";
+import AnimationSpin from "./components/AnimationSpin.vue";
+import NameLog from "./components/NameLog.vue";
+
+export default {
+  components: {
+    NameList,
+    AnimationSpin,
+    NameLog,
+  },
+  setup() {},
+};
+</script>
+
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+
 body {
   background-color: black;
+  font-family: "roboto", "sans-sarif";
 }
 
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+.wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
 }
 
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+.container {
+  display: flex;
 }
 
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+.animation {
+  margin-left: 5em;
+  margin-right: 5em;
 }
 </style>

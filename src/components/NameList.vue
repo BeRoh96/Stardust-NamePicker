@@ -13,39 +13,11 @@
         </li>
       </ul>
     </section>
-    <div class="randomizer">
-      <h2>Randomizer</h2>
-      <div class="list-wrapper">
-        <ul class="list" ref="list">
-          <li v-for="(name, index) in namesToRender" :key="index">
-            {{ name }}
-          </li>
-        </ul>
-      </div>
-      <button @click="triggerAnimation">GO</button>
-    </div>
-    <div class="log">
-      <h2>Log</h2>
-      <button @click="toggleLog">Open Log</button>
-      <ul class="log-list" v-if="!isActiveLog">
-        <li v-for="(name, index) in chosenNames" :key="index">
-          {{ name }}
-        </li>
-      </ul>
-    </div>
   </section>
 </template>
 
 <script lang="ts">
-import {
-  ref,
-  watch,
-  onMounted,
-  type Ref,
-  type ComputedRef,
-  computed,
-} from "vue";
-import { gsap } from "gsap";
+import { ref, watch, onMounted, type Ref, provide } from "vue";
 
 export default {
   setup() {
@@ -55,7 +27,8 @@ export default {
     const chosenNames = ref<String[]>([]);
     const list: Ref<HTMLElement | null> = ref(null);
     const isActiveSelectAll = ref<Boolean>(false);
-    const isActiveLog = ref<Boolean>(true);
+
+    provide("namesToChooseFrom", namesToChooseFrom);
 
     function addName() {
       if (enteredNameValue.value.trim() === "") {
@@ -69,17 +42,6 @@ export default {
       names.value.splice(names.value.indexOf(name), 1);
     }
 
-    const namesToRender: ComputedRef = computed(() => {
-      const arrayToShuffle = [
-        ...namesToChooseFrom.value,
-        ...namesToChooseFrom.value,
-        ...namesToChooseFrom.value,
-        ...namesToChooseFrom.value,
-        ...namesToChooseFrom.value,
-      ];
-      return arrayToShuffle.sort(() => Math.random() - 0.5);
-    });
-
     const toggleSelectAll = () => {
       isActiveSelectAll.value = isActiveSelectAll.value ? false : true;
 
@@ -88,33 +50,6 @@ export default {
       } else {
         namesToChooseFrom.value = [];
       }
-    };
-
-    const toggleLog = () => {
-      isActiveLog.value = isActiveLog.value ? false : true;
-    };
-
-    const triggerAnimation = () => {
-      gsap.set(list.value, { opacity: 1 });
-      const listHeight = list.value?.clientHeight;
-      const memberCount = namesToRender.value.length;
-      const chosenNumber = Math.floor(Math.random() * memberCount);
-
-      if (listHeight) {
-        const position = -1 * (chosenNumber * listHeight);
-        const duration = chosenNumber * listHeight * 0.01;
-
-        gsap.fromTo(
-          list.value,
-          { y: 0 },
-          {
-            y: position,
-            ease: "elastic.out(1, 0.3)",
-            duration: duration,
-          }
-        );
-      }
-      chosenNames.value.unshift(namesToRender.value[chosenNumber]);
     };
 
     watch(
@@ -135,80 +70,25 @@ export default {
       enteredNameValue,
       names,
       namesToChooseFrom,
-      namesToRender,
       chosenNames,
       addName,
       removeName,
-      triggerAnimation,
       list,
-      isActiveLog,
       toggleSelectAll,
-      toggleLog,
     };
   },
 };
 </script>
 
 <style scoped lang="scss">
-@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
-
-.log-list {
-  margin-top: 50px;
-  height: 200px;
-  font-family: "Roboto", sans-serif;
-  font-size: 20px;
-  overflow: auto;
-}
-.log {
-  position: absolute;
-  margin-left: 900px;
-}
-.list-wrapper {
-  font-family: "Roboto", sans-serif;
-  font-size: 36px;
-  text-transform: uppercase;
-  color: black;
-  height: 1em;
-  line-height: 1em;
-  overflow: hidden;
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-}
-
-ul.list {
-  margin: -0.25em 0 0 0;
-  padding: 0;
-  display: inline-block;
-  vertical-align: middle;
-  height: 1em;
-  line-height: 1em;
-  opacity: 0;
-  & li {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    color: white;
-    height: 1em;
-    line-height: 1em;
-    margin: 0;
-    display: block;
-  }
-}
-
-#spinner {
-  margin-top: 150px;
-}
-
 .user-names {
   width: 50%;
 }
 
 .container {
   display: flex;
-  // width: 100%;
-  width: 1300px;
+  width: 100%;
+  height: 100%;
 }
 
 button:hover,
