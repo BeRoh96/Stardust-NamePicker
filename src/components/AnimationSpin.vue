@@ -13,20 +13,22 @@
 </template>
 
 <script lang="ts">
-import { type ComputedRef, computed, inject } from "vue";
+import { type ComputedRef, computed, ref, type Ref } from "vue";
 import { gsap } from "gsap";
 
 export default {
-  setup() {
-    const namesToChooseFrom = inject("namesToChooseFrom");
+  props: ["namesToChooseFrom", "chosenNames"],
+  setup(props) {
+    // const props = defineProps(["namesToChooseFrom"]);
+    const list: Ref<HTMLElement | null> = ref(null);
 
     const namesToRender: ComputedRef = computed(() => {
       const arrayToShuffle = [
-        ...namesToChooseFrom.value,
-        ...namesToChooseFrom.value,
-        ...namesToChooseFrom.value,
-        ...namesToChooseFrom.value,
-        ...namesToChooseFrom.value,
+        ...props.namesToChooseFrom.value,
+        ...props.namesToChooseFrom.value,
+        ...props.namesToChooseFrom.value,
+        ...props.namesToChooseFrom.value,
+        ...props.namesToChooseFrom.value,
       ];
       return arrayToShuffle.sort(() => Math.random() - 0.5);
     });
@@ -51,12 +53,13 @@ export default {
           }
         );
       }
-      chosenNames.value.unshift(namesToRender.value[chosenNumber]);
+      props.chosenNames.value.unshift(namesToRender.value[chosenNumber]);
     };
 
     return {
       triggerAnimation,
       namesToRender,
+      list,
     };
   },
 };

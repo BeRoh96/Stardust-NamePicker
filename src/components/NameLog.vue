@@ -12,7 +12,6 @@
 
 <script lang="ts">
 import { ref } from "vue";
-import NameList from "./NameList.vue";
 
 export default {
   props: ["chosenNames"],

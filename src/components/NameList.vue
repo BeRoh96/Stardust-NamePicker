@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { ref, watch, onMounted, type Ref, provide } from "vue";
+import { ref, watch, onMounted } from "vue";
 
 export default {
   setup() {
@@ -25,10 +25,7 @@ export default {
     const names = ref<String[]>([]);
     const namesToChooseFrom = ref<String[]>([]);
     const chosenNames = ref<String[]>([]);
-    const list: Ref<HTMLElement | null> = ref(null);
     const isActiveSelectAll = ref<Boolean>(false);
-
-    provide("namesToChooseFrom", namesToChooseFrom);
 
     function addName() {
       if (enteredNameValue.value.trim() === "") {
@@ -73,7 +70,6 @@ export default {
       chosenNames,
       addName,
       removeName,
-      list,
       toggleSelectAll,
     };
   },
